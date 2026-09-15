@@ -1,5 +1,17 @@
 {
   "attribution": {
     "commit": ""
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '\"[\" + (now | strftime(\"%Y-%m-%d %H:%M:%S\")) + \"] session=\" + (.session_id // \"unknown\") + \" stop_hook_active=\" + ((.stop_hook_active // false)|tostring)' >> \"$CLAUDE_PROJECT_DIR/claude.log\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
   }
 }
