@@ -8,7 +8,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '\"[\" + (now | strftime(\"%Y-%m-%d %H:%M:%S\")) + \"] session=\" + (.session_id // \"unknown\") + \" stop_hook_active=\" + ((.stop_hook_active // false)|tostring)' >> \"$CLAUDE_PROJECT_DIR/claude.log\" 2>/dev/null || true"
+            "command": "{ in=$(cat); ts=$(date '+%Y-%m-%d %H:%M:%S'); sid=$(echo \"$in\" | jq -r '.session_id // \"unknown\"'); tp=$(echo \"$in\" | jq -r '.transcript_path // empty'); result=$(jq -r 'select(.type==\"assistant\") | .message.content[]? | select(.type==\"text\") | .text' \"$tp\" 2>/dev/null | tail -1 | jq -Rr '.[0:50]'); printf '[%s] session=%s result=\"%s\"\\n' \"$ts\" \"$sid\" \"$result\" >> \"$CLAUDE_PROJECT_DIR/claude.log\"; } 2>/dev/null || true"
           }
         ]
       }
